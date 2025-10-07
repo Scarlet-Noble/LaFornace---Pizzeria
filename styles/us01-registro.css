@@ -1,0 +1,23 @@
+body {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+}
+
+.card {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  background-color: #d32f2f;
+  color: white;
+}
+
+.btn-primary {
+  background-color: #d32f2f;
+  border-color: #d32f2f;
+}
+
+.btn-primary:hover {
+  background-color: #b71c1c;
+  border-color: #b71c1c;
+}

@@ -1,0 +1,18 @@
+body {
+  background: linear-gradient(135deg, #89f7fe 0%, #66a6ff 100%);
+  min-height: 100vh;
+}
+
+.card {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-info {
+  background-color: #0288d1;
+  border-color: #0288d1;
+}
+
+.btn-info:hover {
+  background-color: #0277bd;
+  border-color: #0277bd;
+}

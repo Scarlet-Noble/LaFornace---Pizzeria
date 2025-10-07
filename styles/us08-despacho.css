@@ -1,0 +1,22 @@
+body {
+  background-color: #fff3e0;
+}
+
+.card {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+}
+
+h2 {
+  color: #e65100;
+}
+
+.btn-success {
+  background-color: #388e3c;
+  border-color: #388e3c;
+}
+
+.btn-success:hover {
+  background-color: #2e7d32;
+  border-color: #2e7d32;
+}

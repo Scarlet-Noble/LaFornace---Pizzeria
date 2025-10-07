@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orden de Despacho - La Fornace</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles/us08-despacho.css">
+</head>
+<body>
+    <div class="container py-4">
+        <div class="alert alert-warning text-center">
+            <strong>⚠ Panel de Administración / Cocina</strong>
+        </div>
+
+        <h2 class="mb-4">📦 Gestión de Órdenes de Despacho</h2>
+
+        <div class="card mb-4">
+            <div class="card-header bg-warning">
+                <h5>Orden #12345 - Pendiente</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Datos del Cliente:</h6>
+                        <p class="mb-1"><strong>Nombre:</strong> Juan Pérez</p>
+                        <p class="mb-1"><strong>Dirección:</strong> Los Aromos 456, Providencia</p>
+                        <p class="mb-1"><strong>Teléfono:</strong> +56 9 1234 5678</p>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Detalle del Pedido:</h6>
+                        <ul>
+                            <li>2x Margherita</li>
+                            <li>1x Pepperoni</li>
+                        </ul>
+                        <p><strong>Total: $30.970</strong></p>
+                    </div>
+                </div>
+
+                <hr>
+
+                <div class="mb-3">
+                    <label class="form-label"><strong>Repartidor Asignado:</strong></label>
+                    <select class="form-select">
+                        <option selected>Carlos Rodríguez</option>
+                        <option>María González</option>
+                        <option>Pedro Sánchez</option>
+                    </select>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button class="btn btn-success">Generar Orden</button>
+                    <button class="btn btn-primary">Reasignar Repartidor</button>
+                </div>
+
+                <div class="alert alert-success mt-3 d-none" id="success-generate">
+                    ✓ Orden generada correctamente.
+                </div>
+                <div class="alert alert-info mt-3 d-none" id="success-reassign">
+                    ✓ Repartidor reasignado. Notificación enviada.
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5>Orden #12344 - En Camino</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Cliente:</strong> Ana López</p>
+                <p><strong>Repartidor:</strong> María González</p>
+                <p><strong>Estado:</strong> <span class="badge bg-success">En camino</span></p>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <a href="index.html" class="btn btn-outline-secondary">Volver al inicio</a>
+        </div>
+    </div>
+</body>
+</html>

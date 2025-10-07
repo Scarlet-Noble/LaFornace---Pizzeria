@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seguimiento de Pedido - La Fornace</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles/us09-seguimiento.css">
+</head>
+<body>
+    <div class="container py-4">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-info text-white text-center">
+                        <h3>📍 Seguimiento de Pedido</h3>
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <div class="mb-3">
+                                <label for="order-number" class="form-label">Número de Pedido</label>
+                                <input type="text" class="form-control" id="order-number" placeholder="Ej: 12345">
+                            </div>
+                            <button type="submit" class="btn btn-info w-100 text-white">Consultar Estado</button>
+                        </form>
+
+                        <div class="alert alert-success mt-4 d-none" id="status-in-transit">
+                            <h5>🚚 Estado: En Camino</h5>
+                            <p class="mb-0">Tu pedido está siendo entregado. Tiempo estimado: 15-20 minutos.</p>
+                        </div>
+
+                        <div class="alert alert-primary mt-4 d-none" id="status-delivered">
+                            <h5>✓ Estado: Entregado</h5>
+                            <p class="mb-0">Tu pedido fue entregado exitosamente. ¡Buen provecho!</p>
+                        </div>
+
+                        <div class="alert alert-warning mt-4 d-none" id="status-preparing">
+                            <h5>👨‍🍳 Estado: En Preparación</h5>
+                            <p class="mb-0">Tu pedido está siendo preparado en nuestra cocina.</p>
+                        </div>
+
+                        <div class="mt-4">
+                            <h6>Detalles del Pedido #12345:</h6>
+                            <ul class="list-unstyled">
+                                <li>• 2x Margherita</li>
+                                <li>• 1x Pepperoni</li>
+                            </ul>
+                            <p><strong>Total: $30.970</strong></p>
+                            <p class="text-muted small">Dirección: Los Aromos 456, Providencia</p>
+                        </div>
+                    </div>
+                    <div class="card-footer text-center">
+                        <a href="us07-boleta.html">Ver boleta</a> | 
+                        <a href="index.html">Inicio</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
