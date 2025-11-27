@@ -2,7 +2,7 @@
 //  CONFIG GLOBAL
 // =========================================================
 // Tu API está corriendo en el 8000, no en el 8001
-const API_URL = "http://127.0.0.1:8000/api";
+const API_URL = "https://lafornace-pizzeria.onrender.com";
 
 
 // =========================================================
