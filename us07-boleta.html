@@ -1,87 +1,126 @@
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Boleta - La Fornace</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="styles/global.css">
-        <link rel="stylesheet" href="styles/us07-boleta.css">
-    </head>    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boleta - La Fornace</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles/global.css">
+    <link rel="stylesheet" href="styles/us07-boleta.css">
+</head>
+
 <body>
-    <div class="container py-4">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header bg-primary text-white text-center">
-                        <h3>📄 Boleta Digital</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="text-center mb-4">
-                            <h4>La Fornace</h4>
-                            <p class="mb-0">RUT: 76.123.456-7</p>
-                            <p>Av. Italia 1234, Santiago</p>
-                        </div>
+<div class="container py-4">
+    <h2 class="mb-4">🧾 Boleta del Pedido</h2>
 
-                        <hr>
+    <div id="boleta-card" class="card d-none">
+        <div class="card-body">
 
-                        <div class="mb-3">
-                            <strong>Pedido #12345</strong><br>
-                            <small class="text-muted">Fecha: 06/10/2025 - 14:30</small>
-                        </div>
+            <h5 class="fw-bold">Detalle del Pedido</h5>
 
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Producto</th>
-                                    <th>Cant.</th>
-                                    <th>Precio</th>
-                                    <th>Subtotal</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Margherita</td>
-                                    <td>2</td>
-                                    <td>$8.990</td>
-                                    <td>$17.980</td>
-                                </tr>
-                                <tr>
-                                    <td>Pepperoni</td>
-                                    <td>1</td>
-                                    <td>$10.990</td>
-                                    <td>$10.990</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="3" class="text-end"><strong>Envío:</strong></td>
-                                    <td>$2.000</td>
-                                </tr>
-                                <tr>
-                                    <td colspan="3" class="text-end"><strong>Total:</strong></td>
-                                    <td><strong>$30.970</strong></td>
-                                </tr>
-                            </tbody>
-                        </table>
+            <p><strong>Código de seguimiento:</strong> <span id="codigo"></span></p>
+            <p><strong>Fecha:</strong> <span id="fecha"></span></p>
+            <p><strong>Estado:</strong> <span id="estado"></span></p>
 
-                        <div class="text-center mt-4">
-                            <button class="btn btn-primary me-2">Generar Boleta</button>
-                            <button class="btn btn-outline-secondary">Reenviar Boleta</button>
-                        </div>
+            <p><strong>Cliente:</strong> <span id="cliente"></span></p>
+            <p><strong>Dirección:</strong> <span id="direccion"></span></p>
 
-                        <div class="alert alert-success mt-3 d-none" id="success-msg">
-                            ✓ Boleta generada y enviada a tu correo.
-                        </div>
-                        <div class="alert alert-info mt-3 d-none" id="resend-msg">
-                            ✓ Boleta reenviada a tu correo.
-                        </div>
-                    </div>
-                    <div class="card-footer text-center">
-                        <a href="us09-seguimiento.html">Ver seguimiento del pedido</a> | 
-                        <a href="index.html">Inicio</a>
-                    </div>
-                </div>
+            <hr>
+
+            <h6 class="fw-bold">Productos</h6>
+            <ul id="lista-items" class="list-group mb-3"></ul>
+
+            <div class="d-flex justify-content-between">
+                <span>Subtotal:</span>
+                <strong id="subtotal"></strong>
             </div>
+
+            <div class="d-flex justify-content-between">
+                <span>Envío:</span>
+                <strong id="envio">$2.000</strong>
+            </div>
+
+            <hr>
+
+            <div class="d-flex justify-content-between">
+                <strong>Total:</strong>
+                <strong id="total" class="text-success"></strong>
+            </div>
+
+            <button id="btn-seguimiento" class="btn btn-primary w-100 mt-4">
+                Ver seguimiento del pedido
+            </button>
         </div>
     </div>
+
+    <div id="no-data" class="alert alert-danger d-none mt-4">
+        No hay información de boleta disponible.
+    </div>
+
+    <a href="index.html" class="btn btn-outline-secondary mt-4">Volver al inicio</a>
+</div>
+
+<script src="scripts/api.js"></script>
+<script>
+function formatoCLP(v) {
+    return "$" + v.toLocaleString("es-CL");
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const boletaDiv = document.getElementById("boleta-card");
+    const noData    = document.getElementById("no-data");
+
+    const pedido = JSON.parse(localStorage.getItem("ultimo_pedido"));
+    const usuario = getUsuario();
+
+    if (!pedido) {
+        noData.classList.remove("d-none");
+        return;
+    }
+
+    // Mostrar contenedor
+    boletaDiv.classList.remove("d-none");
+
+    // Datos del pedido
+    document.getElementById("codigo").textContent    = pedido.codigo_seguimiento;
+    document.getElementById("fecha").textContent     = new Date(pedido.fecha_creacion).toLocaleString("es-CL");
+    document.getElementById("estado").textContent    = pedido.estado;
+
+    // Datos del usuario
+    document.getElementById("cliente").textContent   = usuario ? usuario.nombre : "Cliente";
+    document.getElementById("direccion").textContent = usuario?.direccion ?? "(Sin dirección registrada)";
+
+    // Items
+    const lista = document.getElementById("lista-items");
+    lista.innerHTML = "";
+
+    let subtotal = 0;
+
+    pedido.items.forEach(it => {
+        const li = document.createElement("li");
+        li.className = "list-group-item d-flex justify-content-between";
+
+        const precio = it.precio_unitario * it.cantidad;
+        subtotal += precio;
+
+        li.innerHTML = `
+            <span>${it.cantidad}× Pizza #${it.pizza_id}</span>
+            <span>${formatoCLP(precio)}</span>
+        `;
+
+        lista.appendChild(li);
+    });
+
+    // Mostrar subtotal y total
+    document.getElementById("subtotal").textContent = formatoCLP(subtotal);
+    document.getElementById("total").textContent    = formatoCLP(subtotal + 2000);
+
+    // Botón seguimiento
+    document.getElementById("btn-seguimiento").onclick = () => {
+        window.location.href = "us09-seguimiento.html";
+    };
+});
+</script>
 </body>
 </html>

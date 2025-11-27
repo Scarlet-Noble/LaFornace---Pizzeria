@@ -34,4 +34,28 @@
   .badge-role {
     font-size: 0.75rem;
   }
-  
+  /* Animación del botón de tres rayas */
+.navbar-toggler {
+  border: none;
+  outline: none;
+  box-shadow: none;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.navbar-toggler:hover {
+  transform: scale(1.05);
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+.navbar-toggler:focus {
+  box-shadow: none;
+}
+
+/* Animar el icono cuando el menú está abierto */
+.navbar-toggler-icon {
+  transition: transform 0.25s ease;
+}
+
+.navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
+  transform: rotate(90deg);
+}

@@ -1,94 +1,189 @@
 <!DOCTYPE html>
 <html lang="es">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Admin - La Fornace</title>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="styles/global.css">
-        <link rel="stylesheet" href="styles/us10-admin.css">
-    </head>    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Productos - La Fornace</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles/global.css">
+</head>
+
 <body>
-    <div class="container py-4">
-        <div class="alert alert-danger text-center">
-            <strong>🔒 Panel de Administración</strong>
+
+<div class="container py-4">
+
+    <h2 class="mb-4 text-center">🍕 Administración de Productos</h2>
+
+    <!-- FORMULARIO CREAR / EDITAR -->
+    <div class="card mb-4">
+        <div class="card-header bg-dark text-white">
+            <h5 id="form-title">Crear Pizza</h5>
         </div>
 
-        <h2 class="mb-4">⚙️ Actualización de Disponibilidad de Productos</h2>
+        <div class="card-body">
 
-        <div class="card">
-            <div class="card-body">
-                <table class="table table-hover">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Producto</th>
-                            <th>Precio</th>
-                            <th>Estado</th>
-                            <th>Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>Margherita</td>
-                            <td>$8.990</td>
-                            <td><span class="badge bg-success">Disponible</span></td>
-                            <td>
-                                <button class="btn btn-sm btn-danger">Marcar No Disponible</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Pepperoni</td>
-                            <td>$10.990</td>
-                            <td><span class="badge bg-success">Disponible</span></td>
-                            <td>
-                                <button class="btn btn-sm btn-danger">Marcar No Disponible</button>
-                            </td>
-                        </tr>
-                        <tr class="table-secondary">
-                            <td>Cuatro Quesos</td>
-                            <td>$12.990</td>
-                            <td><span class="badge bg-danger">No Disponible</span></td>
-                            <td>
-                                <button class="btn btn-sm btn-success">Restaurar Disponibilidad</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Hawaiana</td>
-                            <td>$9.990</td>
-                            <td><span class="badge bg-success">Disponible</span></td>
-                            <td>
-                                <button class="btn btn-sm btn-danger">Marcar No Disponible</button>
-                            </td>
-                        </tr>
-                        <tr class="table-secondary">
-                            <td>Vegetariana</td>
-                            <td>$11.990</td>
-                            <td><span class="badge bg-danger">No Disponible</span></td>
-                            <td>
-                                <button class="btn btn-sm btn-success">Restaurar Disponibilidad</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Napolitana</td>
-                            <td>$10.490</td>
-                            <td><span class="badge bg-success">Disponible</span></td>
-                            <td>
-                                <button class="btn btn-sm btn-danger">Marcar No Disponible</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <form id="form-pizza">
 
-                <div class="alert alert-success mt-3 d-none" id="success-update">
-                    ✓ Disponibilidad actualizada. Los cambios se reflejan en el catálogo del cliente.
+                <input type="hidden" id="pizza-id">
+
+                <div class="mb-3">
+                    <label class="form-label">Nombre</label>
+                    <input type="text" id="nombre" class="form-control" required>
                 </div>
-            </div>
-        </div>
 
-        <div class="mt-4">
-            <a href="us08-despacho.html" class="btn btn-outline-warning">Ver órdenes de despacho</a>
-            <a href="index.html" class="btn btn-outline-secondary">Volver al inicio</a>
+                <div class="mb-3">
+                    <label class="form-label">Descripción</label>
+                    <textarea id="descripcion" class="form-control"></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Precio</label>
+                    <input type="number" id="precio" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Disponible</label>
+                    <select id="disponible" class="form-select">
+                        <option value="true">Disponible</option>
+                        <option value="false">No disponible</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn btn-success w-100">Guardar</button>
+
+            </form>
+
         </div>
     </div>
+
+    <!-- LISTADO -->
+    <div class="card">
+        <div class="card-header bg-secondary text-white">
+            <h5>Listado de Pizzas</h5>
+        </div>
+
+        <div class="card-body">
+
+            <table class="table table-bordered table-striped text-center">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Precio</th>
+                        <th>Disponible</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody id="tabla-pizzas"></tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+<script src="scripts/api.js"></script>
+
+<script>
+
+/* =========================================================
+   CARGAR LISTA DE PIZZAS
+   (GET no requiere token)
+========================================================= */
+async function cargarPizzas() {
+    const tbody = document.getElementById("tabla-pizzas");
+    tbody.innerHTML = "<tr><td colspan='5'>Cargando...</td></tr>";
+
+    try {
+        const pizzas = await getPizzas();
+        tbody.innerHTML = "";
+
+        pizzas.forEach(p => {
+            tbody.innerHTML += `
+                <tr>
+                    <td>${p.id}</td>
+                    <td>${p.nombre}</td>
+                    <td>$${Number(p.precio).toLocaleString("es-CL")}</td>
+                    <td>
+                        <span class="badge ${p.disponible ? 'bg-success' : 'bg-danger'}">
+                            ${p.disponible ? 'Sí' : 'No'}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="btn btn-warning btn-sm" onclick="editar(${p.id})">Editar</button>
+                    </td>
+                </tr>
+            `;
+        });
+
+    } catch (err) {
+        console.error(err);
+        tbody.innerHTML =
+            "<tr><td colspan='5' class='text-danger'>Error al cargar pizzas.</td></tr>";
+    }
+}
+
+/* =========================================================
+   EDITAR
+========================================================= */
+async function editar(id) {
+    const pizzas = await getPizzas();
+    const p = pizzas.find(x => x.id === id);
+    if (!p) return;
+
+    document.getElementById("form-title").innerText = "Editar Pizza";
+    document.getElementById("pizza-id").value = p.id;
+    document.getElementById("nombre").value = p.nombre;
+    document.getElementById("descripcion").value = p.descripcion ?? "";
+    document.getElementById("precio").value = p.precio;
+    document.getElementById("disponible").value = p.disponible ? "true" : "false";
+}
+
+/* =========================================================
+   GUARDAR FORMULARIO (POST/PUT requieren JWT)
+========================================================= */
+document.getElementById("form-pizza").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const id = document.getElementById("pizza-id").value;
+
+    const data = {
+        nombre: document.getElementById("nombre").value.trim(),
+        descripcion: document.getElementById("descripcion").value.trim(),
+        precio: Number(document.getElementById("precio").value),
+        disponible: document.getElementById("disponible").value === "true"
+    };
+
+    try {
+        if (id) {
+            await apiRequest(`/pizzas/${id}`, "PUT", data, true);
+        } else {
+            await apiRequest("/pizzas", "POST", data, true);
+        }
+
+        alert("Guardado correctamente.");
+
+        document.getElementById("form-pizza").reset();
+        document.getElementById("pizza-id").value = "";
+        document.getElementById("form-title").innerText = "Crear Pizza";
+
+        cargarPizzas();
+
+    } catch (err) {
+        console.error(err);
+        alert("Error al guardar pizza.");
+    }
+});
+
+/* =========================================================
+   INICIO
+========================================================= */
+document.addEventListener("DOMContentLoaded", cargarPizzas);
+
+</script>
+
 </body>
 </html>
