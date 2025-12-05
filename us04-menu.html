@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menú - La Fornace</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="styles/global.css">
+    <link rel="stylesheet" href="styles/us04-menu.css">
+</head>
+
+<body>
+
+    <div class="container py-4">
+
+        <div class="text-center mb-4">
+            <h2>🍕 Nuestro Menú</h2>
+            <p class="text-muted">Pizzas artesanales a la piedra</p>
+        </div>
+
+        <!-- Contenedor dinámico -->
+        <div class="row g-4" id="lista-pizzas"></div>
+
+        <div class="text-center mt-4">
+            <a href="index.html" class="btn btn-outline-secondary">Volver al inicio</a>
+        </div>
+    </div>
+
+    <!-- Toast simple -->
+    <div id="toast-msg"
+         style="position: fixed; bottom: 20px; right: 20px;
+         background: #333; color:white; padding:10px 20px;
+         border-radius:8px; display:none;">
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="scripts/api.js"></script>
+
+    <script>
+
+    // ================================
+    // NOTIFICACIÓN
+    // ================================
+    function mostrarMensaje(texto) {
+        const box = document.getElementById("toast-msg");
+        box.textContent = texto;
+        box.style.display = "block";
+        setTimeout(() => (box.style.display = "none"), 1500);
+    }
+
+    // ================================
+    // CARRITO
+    // ================================
+    function getCarrito() {
+        try {
+            return JSON.parse(localStorage.getItem("carrito")) || [];
+        } catch {
+            return [];
+        }
+    }
+
+    function saveCarrito(carro) {
+        localStorage.setItem("carrito", JSON.stringify(carro));
+    }
+
+    let pizzasCache = [];
+
+    // ================================
+    // CARGAR PIZZAS
+    // ================================
+    async function cargarPizzas() {
+        const cont = document.getElementById("lista-pizzas");
+
+        cont.innerHTML = `
+            <div class="text-center text-muted">
+                Cargando menú...
+            </div>
+        `;
+
+        try {
+            const pizzas = await getPizzas();
+            pizzasCache = pizzas;
+            cont.innerHTML = "";
+
+            if (pizzas.length === 0) {
+                cont.innerHTML = `
+                    <p class="text-center text-muted">No hay pizzas registradas.</p>
+                `;
+                return;
+            }
+
+            pizzas.forEach(p => {
+
+                const precio = Number(p.precio) || 0;
+                const desc   = p.descripcion || "";
+                const disp   = p.disponible === true;
+
+                cont.innerHTML += `
+                    <div class="col-md-4">
+                        <div class="card h-100 shadow-sm">
+
+                            <div class="card-body d-flex flex-column">
+
+                                <h5 class="card-title">${p.nombre}</h5>
+
+                                <p class="card-text mb-1">
+                                    <strong>$${precio.toLocaleString("es-CL")}</strong>
+                                </p>
+
+                                <p class="text-muted small">${desc}</p>
+
+                                <span class="badge ${disp ? "bg-success" : "bg-danger"} mb-2">
+                                    ${disp ? "Disponible" : "No disponible"}
+                                </span>
+
+                                <button
+                                    class="btn btn-${disp ? "primary" : "secondary"} mt-auto w-100"
+                                    ${disp ? "" : "disabled"}
+                                    onclick="agregarAlCarrito(${p.id})"
+                                >
+                                    Agregar al carrito
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                `;
+            });
+
+        } catch (err) {
+            console.error("Error al cargar pizzas:", err);
+            cont.innerHTML = `
+                <p class="text-center text-danger">
+                    Error al cargar el menú. Intenta nuevamente.
+                </p>`;
+        }
+    }
+
+    // ================================
+    // AGREGAR AL CARRITO
+    // ================================
+    function agregarAlCarrito(idPizza) {
+        const pizza = pizzasCache.find(p => p.id === idPizza);
+        if (!pizza) return;
+
+        const carrito = getCarrito();
+        const idx = carrito.findIndex(i => i.id === idPizza);
+
+        if (idx >= 0) {
+            carrito[idx].cantidad++;
+        } else {
+            carrito.push({
+                id: pizza.id,
+                nombre: pizza.nombre,
+                precio: Number(pizza.precio),
+                cantidad: 1
+            });
+        }
+
+        saveCarrito(carrito);
+        mostrarMensaje("Producto agregado al carrito");
+    }
+
+    // ================================
+    // INICIO
+    // ================================
+    document.addEventListener("DOMContentLoaded", cargarPizzas);
+
+    </script>
+
+</body>
+</html>

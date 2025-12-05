@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito - La Fornace</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles/global.css">
+    <link rel="stylesheet" href="styles/us05-carrito.css">
+</head>
+
+<body>
+
+<div class="container py-4">
+
+    <h2 class="mb-4">🛒 Mi Carrito</h2>
+
+    <div class="row">
+        <div class="col-md-8" id="carrito-items"></div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h5>Resumen del Pedido</h5>
+                </div>
+
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Subtotal:</span>
+                        <strong id="subtotal-text">$0</strong>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Envío:</span>
+                        <strong id="envio-text">$0</strong>
+                    </div>
+
+                    <hr>
+
+                    <div class="d-flex justify-content-between mb-3">
+                        <strong>Total:</strong>
+                        <strong class="text-success" id="total-text">$0</strong>
+                    </div>
+
+                    <button id="btn-pagar" class="btn btn-success w-100" disabled>
+                        Proceder al Pago
+                    </button>
+
+                </div>
+            </div>
+
+            <div id="no-stock" class="alert alert-warning d-none mt-3">
+                ⚠ Uno o más productos ya no están disponibles. Revísalos antes de continuar.
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4">
+        <a href="us04-menu.html" class="btn btn-outline-secondary">← Seguir comprando</a>
+        <a href="index.html" class="btn btn-outline-secondary">Inicio</a>
+    </div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="scripts/api.js"></script>
+
+<script>
+
+function getCarrito() {
+    try {
+        return JSON.parse(localStorage.getItem("carrito")) || [];
+    } catch {
+        return [];
+    }
+}
+
+function saveCarrito(c) {
+    localStorage.setItem("carrito", JSON.stringify(c));
+}
+
+function formatoCLP(num) {
+    num = Number(num) || 0;
+    return num.toLocaleString("es-CL");
+}
+
+async function validarStock(carrito) {
+    try {
+        const pizzas = await getPizzas();
+        const problemas = [];
+
+        carrito.forEach(item => {
+            const p = pizzas.find(px => px.id === item.id);
+            if (!p || p.disponible !== true) {
+                problemas.push(item.id);
+            }
+        });
+
+        return problemas;
+    } catch {
+        return [];
+    }
+}
+
+async function renderCarrito() {
+
+    const cont         = document.getElementById("carrito-items");
+    const subtotalText = document.getElementById("subtotal-text");
+    const envioText    = document.getElementById("envio-text");
+    const totalText    = document.getElementById("total-text");
+    const btnPagar     = document.getElementById("btn-pagar");
+    const alertaStock  = document.getElementById("no-stock");
+
+    let carrito = getCarrito();
+
+    if (carrito.length === 0) {
+        cont.innerHTML = `
+            <div class="alert alert-info">
+                Tu carrito está vacío. Agrega pizzas desde el menú.
+            </div>
+        `;
+        subtotalText.textContent = "$0";
+        envioText.textContent    = "$0";
+        totalText.textContent    = "$0";
+        btnPagar.disabled        = true;
+        alertaStock.classList.add("d-none");
+        return;
+    }
+
+    const problemas = await validarStock(carrito);
+
+    if (problemas.length > 0) 
+        alertaStock.classList.remove("d-none");
+    else 
+        alertaStock.classList.add("d-none");
+    cont.innerHTML = "";
+    let subtotal = 0;
+
+    carrito.forEach(item => {
+        const cantidad = Number(item.cantidad) || 1;
+        const precio = Number(item.precio) || 0;
+        const sub = precio * cantidad;
+
+        subtotal += sub;
+
+        cont.innerHTML += `
+            <div class="card mb-3 shadow-sm">
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+                        <div>
+                            <h5>${item.nombre}</h5>
+                            <p class="text-muted mb-0">$${formatoCLP(precio)} c/u</p>
+                        </div>
+
+                        <div class="d-flex align-items-center">
+
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    onclick="cambiarCantidad(${item.id}, -1)">−</button>
+
+                            <span class="mx-3">${cantidad}</span>
+
+                            <button class="btn btn-sm btn-outline-secondary"
+                                    onclick="cambiarCantidad(${item.id}, 1)">+</button>
+
+                            <button class="btn btn-sm btn-danger ms-3"
+                                    onclick="eliminarItem(${item.id})">Eliminar</button>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        `;
+    });
+
+    const envio = subtotal > 0 ? 2000 : 0;
+    const total = subtotal + envio;
+
+    subtotalText.textContent = "$" + formatoCLP(subtotal);
+    envioText.textContent    = "$" + formatoCLP(envio);
+    totalText.textContent    = "$" + formatoCLP(total);
+
+    btnPagar.disabled = (total <= 0 || problemas.length > 0);
+
+    btnPagar.onclick = () => {
+        if (problemas.length > 0) {
+            alert("Hay productos no disponibles. Elimínalos antes de continuar.");
+            return;
+        }
+        window.location.href = "us06-pago.html";
+    };
+}
+
+function cambiarCantidad(id, delta) {
+    let carrito = getCarrito();
+    const idx = carrito.findIndex(i => i.id === id);
+    if (idx === -1) return;
+
+    carrito[idx].cantidad += delta;
+
+    if (carrito[idx].cantidad <= 0) {
+        carrito.splice(idx, 1);
+    }
+
+    saveCarrito(carrito);
+    renderCarrito();
+}
+
+function eliminarItem(id) {
+    let carrito = getCarrito().filter(i => i.id !== id);
+    saveCarrito(carrito);
+    renderCarrito();
+}
+
+document.addEventListener("DOMContentLoaded", renderCarrito);
+
+</script>
+
+</body>
+</html>
