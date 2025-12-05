@@ -1,4 +1,3 @@
-# api/dependencies.py
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer
 from sqlalchemy.orm import Session
@@ -26,5 +25,5 @@ def get_current_user(
 def admin_required(current = Depends(get_current_user)):
     if not current.es_admin:
         raise HTTPException(status_code=403, detail="Acceso solo administradores")
-    # IMPORTANTE: sin coma, retorna el usuario, no una tupla
+    
     return current

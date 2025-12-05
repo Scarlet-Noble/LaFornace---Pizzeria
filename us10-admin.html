@@ -15,7 +15,6 @@
 
     <h2 class="mb-4 text-center">🍕 Administración de Productos</h2>
 
-    <!-- FORMULARIO CREAR / EDITAR -->
     <div class="card mb-4">
         <div class="card-header bg-dark text-white">
             <h5 id="form-title">Crear Pizza</h5>
@@ -57,7 +56,6 @@
         </div>
     </div>
 
-    <!-- LISTADO -->
     <div class="card">
         <div class="card-header bg-secondary text-white">
             <h5>Listado de Pizzas</h5>
@@ -89,10 +87,6 @@
 
 <script>
 
-/* =========================================================
-   CARGAR LISTA DE PIZZAS
-   (GET no requiere token)
-========================================================= */
 async function cargarPizzas() {
     const tbody = document.getElementById("tabla-pizzas");
     tbody.innerHTML = "<tr><td colspan='5'>Cargando...</td></tr>";
@@ -125,10 +119,6 @@ async function cargarPizzas() {
             "<tr><td colspan='5' class='text-danger'>Error al cargar pizzas.</td></tr>";
     }
 }
-
-/* =========================================================
-   EDITAR
-========================================================= */
 async function editar(id) {
     const pizzas = await getPizzas();
     const p = pizzas.find(x => x.id === id);
@@ -142,9 +132,6 @@ async function editar(id) {
     document.getElementById("disponible").value = p.disponible ? "true" : "false";
 }
 
-/* =========================================================
-   GUARDAR FORMULARIO (POST/PUT requieren JWT)
-========================================================= */
 document.getElementById("form-pizza").addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -178,9 +165,6 @@ document.getElementById("form-pizza").addEventListener("submit", async (e) => {
     }
 });
 
-/* =========================================================
-   INICIO
-========================================================= */
 document.addEventListener("DOMContentLoaded", cargarPizzas);
 
 </script>

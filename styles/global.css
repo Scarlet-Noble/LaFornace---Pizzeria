@@ -3,18 +3,15 @@
     --lf-primary-dark: #b71c1c;
   }
   
-  /* Fuente base para todo el sitio */
   body {
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     color: #212529;
   }
   
-  /* Títulos principales (ej: h1 del index) */
   h1 {
     color: var(--lf-primary);
   }
   
-  /* Cards con efecto de elevación suave */
   .card {
     border-radius: 12px;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -25,16 +22,14 @@
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
   }
   
-  /* Inputs un poco más suaves */
   .form-control {
     border-radius: 8px;
   }
   
-  /* Tamaño estándar para el badge de rol (index) */
   .badge-role {
     font-size: 0.75rem;
   }
-  /* Animación del botón de tres rayas */
+
 .navbar-toggler {
   border: none;
   outline: none;
@@ -51,7 +46,6 @@
   box-shadow: none;
 }
 
-/* Animar el icono cuando el menú está abierto */
 .navbar-toggler-icon {
   transition: transform 0.25s ease;
 }

@@ -1,4 +1,3 @@
-# api/main.py
 from typing import List
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -18,7 +17,6 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -31,10 +29,6 @@ app.add_middleware(
 def root():
     return {"status": "ok", "msg": "API lista"}
 
-
-# =========================================================
-#   USUARIOS
-# =========================================================
 @app.post("/api/usuarios/registro", response_model=schemas.UsuarioOut)
 def registrar_usuario(usuario: schemas.UsuarioCreate, db: Session = Depends(get_db)):
 
@@ -68,7 +62,6 @@ def login_usuario(credenciales: schemas.UsuarioLogin, db: Session = Depends(get_
     if not verify_password(credenciales.password, user.password_hash):
         raise HTTPException(status_code=401, detail="Credenciales inválidas")
 
-    # IMPORTANTE: el payload lleva "id", que lee get_current_user
     token = crear_token({"id": user.id})
 
     usuario_data = jsonable_encoder(user)
@@ -78,10 +71,6 @@ def login_usuario(credenciales: schemas.UsuarioLogin, db: Session = Depends(get_
         "usuario": usuario_data
     }
 
-
-# =========================================================
-#   PIZZAS
-# =========================================================
 @app.get("/api/pizzas", response_model=List[schemas.PizzaOut])
 def listar_pizzas(db: Session = Depends(get_db)):
     return db.query(models.Pizza).all()
@@ -123,10 +112,6 @@ def actualizar_pizza(
     db.refresh(pizza)
     return pizza
 
-
-# =========================================================
-#   PEDIDOS (CLIENTE)
-# =========================================================
 @app.post("/api/pedidos", response_model=schemas.PedidoOut)
 def crear_pedido(
     pedido_data: schemas.PedidoCreate,
@@ -157,7 +142,6 @@ def crear_pedido(
     db.commit()
     db.refresh(nuevo)
 
-    # Guardar items
     for item in pedido_data.items:
         pizza = db.query(models.Pizza).filter(models.Pizza.id == item.pizza_id).first()
         detalle = models.PedidoItem(
@@ -181,10 +165,6 @@ def seguimiento(codigo: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Pedido no encontrado")
     return pedido
 
-
-# =========================================================
-#   PEDIDOS (ADMIN) – para US08
-# =========================================================
 @app.get("/api/pedidos", response_model=List[schemas.PedidoOut])
 def listar_pedidos_admin(
     db: Session = Depends(get_db),

@@ -32,9 +32,7 @@
 <script src="scripts/api.js"></script>
 
 <script>
-// =========================================
-// Cargar pedidos desde backend
-// =========================================
+
 async function cargarPedidos() {
     const cont = document.getElementById("contenedor-pedidos");
     cont.innerHTML = "<p>Cargando pedidos...</p>";
@@ -54,7 +52,6 @@ async function cargarPedidos() {
             const cliente = p.usuario?.nombre || "Cliente desconocido";
             const direccion = p.usuario?.direccion || "Sin dirección";
 
-            // Detalle de items
             let detalleHTML = "";
             if (p.items?.length > 0) {
                 detalleHTML = "<ul>";
@@ -100,13 +97,8 @@ async function cargarPedidos() {
     }
 }
 
-// =========================================
-// Botones dinámicos según estado del pedido
-// =========================================
-function botonesEstado(pedido) {
 
-    // Flujo real:
-    // pagado → preparando → en_camino → entregado
+function botonesEstado(pedido) {
 
     if (pedido.estado === "pagado") {
         return `
@@ -142,10 +134,6 @@ function botonesEstado(pedido) {
     return `<span class="badge bg-secondary">${pedido.estado}</span>`;
 }
 
-
-// =========================================
-// Cambiar estado
-// =========================================
 async function cambiarEstado(id, nuevoEstado) {
     try {
         await apiRequest(`/admin/pedidos/${id}/estado`, "PUT", {
@@ -160,9 +148,6 @@ async function cambiarEstado(id, nuevoEstado) {
 }
 
 
-// =========================================
-// Auto refresco cada 5 segundos
-// =========================================
 setInterval(cargarPedidos, 5000);
 
 document.addEventListener("DOMContentLoaded", cargarPedidos);

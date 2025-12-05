@@ -1,15 +1,13 @@
-# api/auth.py
 from datetime import datetime, timedelta
 from typing import Optional
 from jose import jwt
 from passlib.context import CryptContext
 
-# Usamos argon2 como definiste
 pwd = CryptContext(schemes=["argon2"], deprecated="auto")
 
 SECRET_KEY = "FORNACE_SECRET_123"
 ALGORITHM = "HS256"
-ACCESS_EXPIRE_MINUTES = 60 * 24  # 24 horas
+ACCESS_EXPIRE_MINUTES = 60 * 24
 
 
 def hash_password(password: str):

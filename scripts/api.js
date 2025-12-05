@@ -1,13 +1,6 @@
-// =========================================================
-//  CONFIG GLOBAL
-// =========================================================
-// Tu API está corriendo en el 8000, no en el 8001
 const API_URL = "https://lafornace-pizzeria.onrender.com";
 
 
-// =========================================================
-//  SESIÓN LOCALSTORAGE
-// =========================================================
 function saveSession(token, usuario) {
     localStorage.setItem("token", token);
     localStorage.setItem("usuario", JSON.stringify(usuario));
@@ -31,10 +24,6 @@ function logout() {
     window.location.href = "index.html";
 }
 
-
-// =========================================================
-//  API REQUEST UNIVERSAL
-// =========================================================
 async function apiRequest(endpoint, method = "GET", data = null, auth = false) {
 
     const headers = {
@@ -69,10 +58,6 @@ async function apiRequest(endpoint, method = "GET", data = null, auth = false) {
     return json;
 }
 
-
-// =========================================================
-//  VALIDACIÓN DE RUTAS
-// =========================================================
 const protectedPages = [
     "us05-carrito.html",
     "us06-pago.html",
@@ -89,7 +74,6 @@ function validateRoute() {
     const usuario = getUsuario();
     const token = getToken();
 
-    // Rutas que requieren login
     if (protectedPages.includes(path)) {
         if (!token) {
             alert("Debes iniciar sesión para acceder.");
@@ -98,7 +82,6 @@ function validateRoute() {
         }
     }
 
-    // Rutas admin
     if (adminPages.includes(path)) {
         if (!usuario || usuario.es_admin !== true) {
             alert("Acceso solo para administradores.");
@@ -110,10 +93,6 @@ function validateRoute() {
 
 validateRoute();
 
-
-// =========================================================
-//  NAVBAR DINÁMICO
-// =========================================================
 function renderNavbar() {
     const usuario = getUsuario();
     const navUL = document.querySelector(".offcanvas-body ul");
@@ -153,13 +132,6 @@ function renderNavbar() {
 
 renderNavbar();
 
-
-// =========================================================
-//  LLAMADAS A LA API
-// =========================================================
-
-// ---------- REGISTRO ----------
-// OJO: el backend espera: nombre, correo, contrasena, direccion, telefono
 async function registrarUsuario(nombre, email, password, direccion, telefono) {
     const payload = {
         nombre: nombre,
@@ -172,8 +144,6 @@ async function registrarUsuario(nombre, email, password, direccion, telefono) {
     return await apiRequest("/usuarios/registro", "POST", payload);
 }
 
-// ---------- LOGIN ----------
-// El backend también espera: correo y contrasena
 async function loginUsuario(email, password) {
     const res = await apiRequest("/usuarios/login", "POST", {
         email: email,
@@ -185,12 +155,11 @@ async function loginUsuario(email, password) {
 }
 
 
-// ---------- PIZZAS ----------
 async function getPizzas() {
     return await apiRequest("/pizzas", "GET");
 }
 
-// ---------- PEDIDOS ----------
+
 async function crearPedido(usuario_id, items) {
     return await apiRequest("/pedidos", "POST", { usuario_id, items }, true);
 }

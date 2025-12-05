@@ -79,19 +79,15 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    // Mostrar contenedor
     boletaDiv.classList.remove("d-none");
 
-    // Datos del pedido
     document.getElementById("codigo").textContent    = pedido.codigo_seguimiento;
     document.getElementById("fecha").textContent     = new Date(pedido.fecha_creacion).toLocaleString("es-CL");
     document.getElementById("estado").textContent    = pedido.estado;
 
-    // Datos del usuario
     document.getElementById("cliente").textContent   = usuario ? usuario.nombre : "Cliente";
     document.getElementById("direccion").textContent = usuario?.direccion ?? "(Sin dirección registrada)";
 
-    // Items
     const lista = document.getElementById("lista-items");
     lista.innerHTML = "";
 
@@ -112,11 +108,9 @@ document.addEventListener("DOMContentLoaded", () => {
         lista.appendChild(li);
     });
 
-    // Mostrar subtotal y total
     document.getElementById("subtotal").textContent = formatoCLP(subtotal);
     document.getElementById("total").textContent    = formatoCLP(subtotal + 2000);
 
-    // Botón seguimiento
     document.getElementById("btn-seguimiento").onclick = () => {
         window.location.href = "us09-seguimiento.html";
     };

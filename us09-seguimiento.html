@@ -39,7 +39,6 @@
         </div>
     </div>
 
-    <!-- RESULTADO -->
     <div id="resultado"></div>
 
     <a href="index.html" class="btn btn-outline-secondary mt-3">Volver</a>
@@ -50,9 +49,6 @@
 <script>
 const ESTADOS = ["pagado", "preparando", "en_camino", "entregado"];
 
-// =====================================================
-// Dibuja barra de progreso según estado
-// =====================================================
 function renderProgreso(estado) {
     const idx = ESTADOS.indexOf(estado);
 
@@ -78,15 +74,10 @@ function renderProgreso(estado) {
     return barra;
 }
 
-
-// =====================================================
-// Mostrar datos del pedido
-// =====================================================
 function renderPedido(p) {
     const cliente = p.usuario?.nombre || "Cliente";
     const direccion = p.usuario?.direccion || "Dirección no registrada";
 
-    // Items
     let itemsHTML = "<ul>";
     p.items.forEach(it => {
         const nombre = it.pizza?.nombre || "Pizza";
@@ -118,10 +109,6 @@ function renderPedido(p) {
     `;
 }
 
-
-// =====================================================
-// Buscar pedido
-// =====================================================
 async function buscarPedido(cod) {
     const resDiv = document.getElementById("resultado");
     resDiv.innerHTML = "<p>Buscando pedido...</p>";
@@ -131,7 +118,6 @@ async function buscarPedido(cod) {
 
         resDiv.innerHTML = renderPedido(p);
 
-        // Guardar código para auto-refresh
         localStorage.setItem("lastTracking", cod);
 
     } catch (err) {
@@ -143,20 +129,12 @@ async function buscarPedido(cod) {
     }
 }
 
-
-// =====================================================
-// FORMULARIO
-// =====================================================
 document.getElementById("form-buscar").addEventListener("submit", (e) => {
     e.preventDefault();
     const codigo = document.getElementById("codigo").value.trim().toUpperCase();
     buscarPedido(codigo);
 });
 
-
-// =====================================================
-// AUTO-REFRESH CADA 5 SEGUNDOS
-// =====================================================
 setInterval(() => {
     const last = localStorage.getItem("lastTracking");
     if (last) buscarPedido(last);

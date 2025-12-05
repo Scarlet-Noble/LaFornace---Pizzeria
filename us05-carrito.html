@@ -17,11 +17,7 @@
     <h2 class="mb-4">🛒 Mi Carrito</h2>
 
     <div class="row">
-
-        <!-- ITEMS -->
         <div class="col-md-8" id="carrito-items"></div>
-
-        <!-- RESUMEN -->
         <div class="col-md-4">
             <div class="card">
                 <div class="card-header bg-dark text-white">
@@ -66,16 +62,11 @@
     </div>
 
 </div>
-
-<!-- SCRIPTS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="scripts/api.js"></script>
 
 <script>
 
-/* =====================================================
-   HELPERS
-===================================================== */
 function getCarrito() {
     try {
         return JSON.parse(localStorage.getItem("carrito")) || [];
@@ -93,9 +84,6 @@ function formatoCLP(num) {
     return num.toLocaleString("es-CL");
 }
 
-/* =====================================================
-   VALIDAR DISPONIBILIDAD REAL DESDE BACKEND
-===================================================== */
 async function validarStock(carrito) {
     try {
         const pizzas = await getPizzas();
@@ -114,9 +102,6 @@ async function validarStock(carrito) {
     }
 }
 
-/* =====================================================
-   RENDER PRINCIPAL
-===================================================== */
 async function renderCarrito() {
 
     const cont         = document.getElementById("carrito-items");
@@ -142,16 +127,12 @@ async function renderCarrito() {
         return;
     }
 
-    // Validar disponibilidad real
     const problemas = await validarStock(carrito);
 
     if (problemas.length > 0) 
         alertaStock.classList.remove("d-none");
     else 
         alertaStock.classList.add("d-none");
-
-
-    // Render limpio
     cont.innerHTML = "";
     let subtotal = 0;
 
@@ -194,8 +175,6 @@ async function renderCarrito() {
         `;
     });
 
-
-    // Cálculos
     const envio = subtotal > 0 ? 2000 : 0;
     const total = subtotal + envio;
 
@@ -214,9 +193,6 @@ async function renderCarrito() {
     };
 }
 
-/* =====================================================
-   CAMBIAR CANTIDAD
-===================================================== */
 function cambiarCantidad(id, delta) {
     let carrito = getCarrito();
     const idx = carrito.findIndex(i => i.id === id);
@@ -232,9 +208,6 @@ function cambiarCantidad(id, delta) {
     renderCarrito();
 }
 
-/* =====================================================
-   ELIMINAR ÍTEM
-===================================================== */
 function eliminarItem(id) {
     let carrito = getCarrito().filter(i => i.id !== id);
     saveCarrito(carrito);
